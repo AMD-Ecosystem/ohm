@@ -25,12 +25,15 @@
 #define GPUTIL_NULL   0
 #define GPUTIL_OPENCL 1
 #define GPUTIL_CUDA   2
+#define GPUTIL_HIP    3
 
 // Setup GPUTIL_DEVICE. This has a non-zero value only when building device code.
 #if defined(__OPENCL_C_VERSION__)
 #define GPUTIL_DEVICE GPUTIL_OPENCL
 #elif defined(__CUDACC__)
 #define GPUTIL_DEVICE GPUTIL_CUDA
+#elif defined(__HIPCC__)
+#define GPUTIL_DEVICE GPUTIL_HIP
 #else
 #define GPUTIL_DEVICE GPUTIL_NULL
 #endif

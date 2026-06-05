@@ -1,8 +1,8 @@
 include(GenerateExportHeader)
 
-if(NOT OHM_FEATURE_CUDA AND NOT OHM_FEATURE_OPENCL)
-  message(FATAL_ERROR "Neither OHM_FEATURE_CUDA nor OHM_FEATURE_OPENCL selected for build. A GPU SDK is required to build gputil.")
-endif(NOT OHM_FEATURE_CUDA AND NOT OHM_FEATURE_OPENCL)
+if(NOT OHM_FEATURE_CUDA AND NOT OHM_FEATURE_OPENCL AND NOT OHM_FEATURE_HIP)
+  message(FATAL_ERROR "Neither OHM_FEATURE_CUDA, OHM_FEATURE_OPENCL, nor OHM_FEATURE_HIP selected for build. A GPU SDK is required to build gputil.")
+endif(NOT OHM_FEATURE_CUDA AND NOT OHM_FEATURE_OPENCL AND NOT OHM_FEATURE_HIP)
 
 if(OHM_FEATURE_CUDA AND OHM_USE_DEPRECATED_CMAKE_CUDA)
   # Need to find CUDA for deprecated project configuration
@@ -11,6 +11,7 @@ endif(OHM_FEATURE_CUDA AND OHM_USE_DEPRECATED_CMAKE_CUDA)
 
 set(GPUTIL_TYPE_OPENCL 1)
 set(GPUTIL_TYPE_CUDA 2)
+set(GPUTIL_TYPE_HIP 3)
 
 set(PUBLIC_HEADERS
   gpu_ext.h
@@ -187,10 +188,69 @@ if(OHM_FEATURE_CUDA)
   _gputil_setup_library(gputilcuda ${GPUTIL_TYPE_CUDA})
 endif(OHM_FEATURE_CUDA)
 
+if(OHM_FEATURE_HIP)
+  set(SOURCES_HIP
+    hip/hutil_atomic.h
+    hip/hutil_decl.h
+    hip/hutil_importcl.h
+    hip/hutil_math.h
+    hip/gpuApiExceptionCode.cpp
+    hip/gpuBuffer.cpp
+    hip/gpuBufferDetail.h
+    hip/gpuDevice.cpp
+    hip/gpuDeviceDetail.h
+    hip/gpuEvent.cpp
+    hip/gpuEventDetail.h
+    hip/gpuKernel.cpp
+    hip/gpuKernel2.h
+    hip/gpuKernelDetail.h
+    hip/gpuMemRegion.cpp
+    hip/gpuMemRegion.h
+    hip/gpuPinnedBuffer.cpp
+    hip/gpuPlatform2.h
+    hip/gpuProgram.cpp
+    hip/gpuProgramDetail.h
+    hip/gpuQueue.cpp
+    hip/gpuQueueDetail.h
+    hip/ref.h
+    )
+
+  set(PUBLIC_HEADERS_HIP
+    hip/hutil_atomic.h
+    hip/hutil_decl.h
+    hip/hutil_importcl.h
+    hip/hutil_math.h
+    hip/gpuBufferDetail.h
+    hip/gpuDeviceDetail.h
+    hip/gpuEventDetail.h
+    hip/gpuKernel2.h
+    hip/gpuKernelDetail.h
+    hip/gpuMemRegion.h
+    hip/gpuPlatform2.h
+    hip/gpuProgramDetail.h
+    hip/gpuQueueDetail.h
+    hip/ref.h
+  )
+
+  add_library(gputilhip ${SOURCES} ${SOURCES_HIP})
+  # Link HIP runtime directly - do not use hip::device which would add HIP compiler flags to C++ sources
+  target_link_libraries(gputilhip PUBLIC hip::host logutil)
+
+  clang_tidy_target(gputilhip EXCLUDE_MATCHES ".*\.cl")
+  target_include_directories(gputilhip SYSTEM
+    PRIVATE
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/hip>
+  )
+  _gputil_setup_library(gputilhip ${GPUTIL_TYPE_HIP})
+endif(OHM_FEATURE_HIP)
+
 install(FILES ${PUBLIC_HEADERS} DESTINATION ${OHM_PREFIX_INCLUDE}/gputil)
 if(PUBLIC_HEADERS_CUDA)
   install(FILES ${PUBLIC_HEADERS_CUDA} DESTINATION ${OHM_PREFIX_INCLUDE}/gputil/cuda)
 endif(PUBLIC_HEADERS_CUDA)
+if(PUBLIC_HEADERS_HIP)
+  install(FILES ${PUBLIC_HEADERS_HIP} DESTINATION ${OHM_PREFIX_INCLUDE}/gputil/hip)
+endif(PUBLIC_HEADERS_HIP)
 if(PUBLIC_HEADERS_OPENCL)
   install(FILES ${PUBLIC_HEADERS_OPENCL} DESTINATION ${OHM_PREFIX_INCLUDE}/gputil/cl)
 endif(PUBLIC_HEADERS_OPENCL)
@@ -198,3 +258,4 @@ endif(PUBLIC_HEADERS_OPENCL)
 source_group("source" REGULAR_EXPRESSION ".*$")
 source_group("source\\cl" REGULAR_EXPRESSION "/cl/.*$")
 source_group("source\\cuda" REGULAR_EXPRESSION "/cuda/.*$")
+source_group("source\\hip" REGULAR_EXPRESSION "/hip/.*$")

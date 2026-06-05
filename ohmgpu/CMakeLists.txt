@@ -257,6 +257,27 @@ if(OHM_FEATURE_CUDA)
   _ohmgpu_setup_target(ohmcuda gputilcuda ${OHM_GPU_CUDA})
 endif(OHM_FEATURE_CUDA)
 
+set(OHM_GPU_HIP 3)
+if(OHM_FEATURE_HIP)
+  set(GPU_SOURCES_HIP
+    gpu/CovarianceHitNdt.hip
+    gpu/LineKeys.hip
+    gpu/RaysQuery.hip
+    gpu/RegionUpdate.hip
+    gpu/RegionUpdateNdt.hip
+    gpu/RoiRangeFill.hip
+    gpu/TransformSamples.hip
+    gpu/TsdfUpdate.hip
+  )
+
+  add_library(ohmhip ${SOURCES} ${GPU_SOURCES_HIP} ${GPU_HEADERS})
+  set_source_files_properties(${GPU_SOURCES_HIP} PROPERTIES LANGUAGE HIP)
+  # Link HIP host for C++ files, the .hip files are compiled with HIP language
+  target_link_libraries(ohmhip PUBLIC hip::host)
+
+  _ohmgpu_setup_target(ohmhip gputilhip ${OHM_GPU_HIP})
+endif(OHM_FEATURE_HIP)
+
 install(FILES ${PUBLIC_HEADERS} DESTINATION ${OHM_PREFIX_INCLUDE}/ohmgpu)
 
 source_group("source" REGULAR_EXPRESSION ".*$")

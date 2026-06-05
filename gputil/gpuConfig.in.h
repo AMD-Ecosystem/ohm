@@ -24,6 +24,7 @@
 #define GPUTIL_NONE 0
 #define GPUTIL_OPENCL 1
 #define GPUTIL_CUDA 2
+#define GPUTIL_HIP 3
 // clang-format on
 
 #endif  // GPUCONFIG_H

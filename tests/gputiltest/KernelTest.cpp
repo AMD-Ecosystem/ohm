@@ -20,9 +20,9 @@
 
 extern gputil::Device g_gpu;
 
-#if GPUTIL_TYPE == GPUTIL_CUDA
+#if GPUTIL_TYPE == GPUTIL_CUDA || GPUTIL_TYPE == GPUTIL_HIP
 GPUTIL_CUDA_DECLARE_KERNEL(matrixMultiply);
-#endif  // GPUTIL_TYPE == GPUTIL_CUDA
+#endif  // GPUTIL_TYPE == GPUTIL_CUDA || GPUTIL_TYPE == GPUTIL_HIP
 
 namespace gpukerneltest
 {

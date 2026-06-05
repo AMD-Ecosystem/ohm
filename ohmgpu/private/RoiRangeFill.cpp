@@ -43,12 +43,12 @@
 #include "RoiRangeFillResource.h"
 #endif  // defined(OHM_EMBED_GPU_CODE) && GPUTIL_TYPE == GPUTIL_OPENCL
 
-#if GPUTIL_TYPE == GPUTIL_CUDA
+#if GPUTIL_TYPE == GPUTIL_CUDA || GPUTIL_TYPE == GPUTIL_HIP
 GPUTIL_CUDA_DECLARE_KERNEL(seedRegionVoxels);
 GPUTIL_CUDA_DECLARE_KERNEL(seedFromOuterRegions);
 GPUTIL_CUDA_DECLARE_KERNEL(propagateObstacles);
 GPUTIL_CUDA_DECLARE_KERNEL(migrateResults);
-#endif  // GPUTIL_TYPE == GPUTIL_CUDA
+#endif  // GPUTIL_TYPE == GPUTIL_CUDA || GPUTIL_TYPE == GPUTIL_HIP
 
 namespace ohm
 {

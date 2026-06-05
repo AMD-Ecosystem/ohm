@@ -54,9 +54,9 @@
 #include "RegionUpdateResource.h"
 #endif  // defined(OHM_EMBED_GPU_CODE) && GPUTIL_TYPE == GPUTIL_OPENCL
 
-#if GPUTIL_TYPE == GPUTIL_CUDA
+#if GPUTIL_TYPE == GPUTIL_CUDA || GPUTIL_TYPE == GPUTIL_HIP
 GPUTIL_CUDA_DECLARE_KERNEL(regionRayUpdateOccupancy);
-#endif  // GPUTIL_TYPE == GPUTIL_CUDA
+#endif  // GPUTIL_TYPE == GPUTIL_CUDA || GPUTIL_TYPE == GPUTIL_HIP
 
 namespace ohm
 {

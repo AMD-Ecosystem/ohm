@@ -84,6 +84,10 @@ if(OHM_FEATURE_CUDA)
   )
 endif(OHM_FEATURE_CUDA)
 
+if(OHM_FEATURE_HIP)
+  _ohmtestgpu_setup(hip)
+endif(OHM_FEATURE_HIP)
+
 source_group("source" REGULAR_EXPRESSION ".*$")
 # Needs CMake 3.8+:
 # source_group(TREE "${CMAKE_CURRENT_LIST_DIR}" PREFIX source FILES ${SOURCES})

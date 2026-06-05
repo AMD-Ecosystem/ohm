@@ -78,6 +78,15 @@ if(OHM_FEATURE_CUDA)
   )
 endif(OHM_FEATURE_CUDA)
 
+if(OHM_FEATURE_HIP)
+  set(GPU_SOURCES_HIP
+    hip/matrix_kernel.hip
+  )
+  add_executable(gputiltesthip ${SOURCES} ${GPU_SOURCES_HIP})
+  set_source_files_properties(${GPU_SOURCES_HIP} PROPERTIES LANGUAGE HIP)
+  _gputiltest_setup_target(gputiltesthip gputilhip)
+endif(OHM_FEATURE_HIP)
+
 source_group("source" REGULAR_EXPRESSION ".*$")
 # Needs CMake 3.8+:
 # source_group(TREE "${CMAKE_CURRENT_LIST_DIR}" PREFIX source FILES ${SOURCES})

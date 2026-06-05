@@ -312,6 +312,8 @@ private:
 #include "cl/gpuKernel2.h"
 #elif GPUTIL_TYPE == GPUTIL_CUDA
 #include "cuda/gpuKernel2.h"
+#elif GPUTIL_TYPE == GPUTIL_HIP
+#include "hip/gpuKernel2.h"
 #else  // GPUTIL_TYPE == ???
 #error Unknown GPU base API
 #endif  // GPUTIL_TYPE

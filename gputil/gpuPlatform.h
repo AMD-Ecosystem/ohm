@@ -12,6 +12,8 @@
 #include "cl/gpuPlatform2.h"
 #elif GPUTIL_TYPE == GPUTIL_CUDA
 #include "cuda/gpuPlatform2.h"
+#elif GPUTIL_TYPE == GPUTIL_HIP
+#include "hip/gpuPlatform2.h"
 #else  // GPUTIL_TYPE == ???
 #error Unknown GPU base API
 #endif  // GPUTIL_TYPE
