@@ -13,12 +13,9 @@ endif(CMAKE_HIP_COMPILER)
 option(OHM_FEATURE_HIP "Build ohm library and utilities for HIP/ROCm?" ${OHM_FEATURE_HIP_DEFAULT})
 
 if(OHM_FEATURE_HIP)
+  # enable_language(HIP) honors an explicit -DCMAKE_HIP_ARCHITECTURES, otherwise
+  # auto-detects the host GPU(s), and errors on a no-GPU build host.
   enable_language(HIP)
-
-  # Set default architecture if not specified
-  if(NOT DEFINED CMAKE_HIP_ARCHITECTURES OR CMAKE_HIP_ARCHITECTURES STREQUAL "")
-    set(CMAKE_HIP_ARCHITECTURES "gfx90a" CACHE STRING "HIP architectures to compile for")
-  endif()
 
   # Match HIP standard to the C++ standard for the project
   set(CMAKE_HIP_STANDARD ${CMAKE_CXX_STANDARD})
